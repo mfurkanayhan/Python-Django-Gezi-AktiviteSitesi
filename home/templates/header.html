@@ -18,11 +18,11 @@
                         {% load mptt_tags %}
 
                         {% recursetree category %}
-                            <li {% if not node.is_leaf_node %} class="dropdown" {% endif %} ><a href="/category/{{ node.slug }}"><span>{{ node.title }}</span> {% if not node.is_leaf_node %} <i class="bi bi-chevron-right"> </i> {% endif %} </a>
+                            <li {% if not node.is_leaf_node %} class="dropdown" {% endif %} ><a href="/category/{{ node.id }}/{{ node.slug }}"><span>{{ node.title }}</span> {% if not node.is_leaf_node %} <i class="bi bi-chevron-right"> </i> {% endif %} </a>
 
                                 {% if not node.is_leaf_node %}
                                     <ul>
-                                <li><a href="#">{{ children }}</a></li>
+                                <li><a href="/category/{{ node.id }}/{{ node.slug }}">{{ children }}</a></li>
 
                                     </ul>
                                 {% endif %}

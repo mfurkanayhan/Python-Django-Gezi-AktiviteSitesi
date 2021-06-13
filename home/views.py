@@ -11,12 +11,15 @@ def index(request):
     setting = Setting.objects.get(pk=1)
     sliderdata = Content.objects.all()[:4]
     category=Category.objects.all()
-
+    eventcontents = Content.objects.all().order_by('?')[:6]
+    #order_by ? kısmı idye göre random getirmek için..
 
     context={'setting':setting,
-               'category': category,
-               'page':'home',
-               'sliderdata':sliderdata}
+             'category': category,
+             'page':'home',
+             'sliderdata':sliderdata,
+             'eventcontents': eventcontents
+             }
     return render(request,'index.html', context)
 
 def hakkimizda(request):
@@ -61,11 +64,13 @@ def iletisim(request):
 
 
 def category_contents(request,id,slug):
-    categorydata = Category.objects.get(pk=id)
     category = Category.objects.all()
+    setting = Setting.objects.all()
+    categorydata = Category.objects.get(pk=id)
     contents = Content.objects.filter(category_id=id)
     context = {'contents': contents,
                'category': category,
-               'categorydata': categorydata
+               'categorydata': categorydata,
+               'setting': setting
                }
     return render(request,'contents.html',context)
