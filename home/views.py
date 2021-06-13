@@ -13,21 +13,30 @@ def index(request):
     category=Category.objects.all()
 
 
-    context = {'setting':setting,
+    context={'setting':setting,
                'category': category,
                'page':'home',
                'sliderdata':sliderdata}
     return render(request,'index.html', context)
 
 def hakkimizda(request):
+    category = Category.objects.all()
     setting = Setting.objects.get(pk=1)
-    context = {'setting':setting}
+    context = {'setting':setting,
+               'category': category
+               }
     return render(request,'hakkimizda.html', context)
 
 def referanslar(request):
+    category = Category.objects.all()
     setting = Setting.objects.get(pk=1)
-    context = {'setting':setting}
+    context = {'setting':setting,
+               'category':category
+               }
     return render(request,'referanslarimiz.html', context)
+
+
+
 
 def iletisim(request):
 
@@ -44,7 +53,19 @@ def iletisim(request):
             messages.success(request, "Mesajınız başarı ile gönderilmiştir. Teşekkür Ederiz ")
             return HttpResponseRedirect ('/iletisim')
 
+    category = Category.objects.all()
     setting = Setting.objects.get(pk=1)
     form = ContactFormu()
-    context = {'setting':setting,'form':form}
+    context = {'setting':setting,'form':form,'category':category}
     return render(request,'iletisim.html', context)
+
+
+def category_contents(request,id,slug):
+    categorydata = Category.objects.get(pk=id)
+    category = Category.objects.all()
+    contents = Content.objects.filter(category_id=id)
+    context = {'contents': contents,
+               'category': category,
+               'categorydata': categorydata
+               }
+    return render(request,'contents.html',context)

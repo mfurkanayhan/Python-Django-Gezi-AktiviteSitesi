@@ -6,15 +6,21 @@
         <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
 
         <div class="carousel-inner" role="listbox">
+
             <!-- Slide 1 -->
-            {% for rs in sliderdata %}
-            <div class="carousel-item active" style="background-image: url({{ rs.image.url }})">
-                <div class="carousel-container text-center">
-                    <h2>{{ rs.title }}</h2>
-                    <h3>{{ rs.description }}</h3>
-                    <a href="/product/{{ rs.id }}/{{ rs.slug }}" class="btn-primary">Devamını Oku</a>
-                </div>
+            <div class="carousel-item active" style="background-image: url({%  static 'assets/img/slide/slide-1.jpg' %})">
             </div>
+            {% for rs in sliderdata %}
+                <!-- Slide 2 -->
+                <div class="carousel-item" style="background-image: url({{ rs.image.url }})">
+                    <div class="carousel-container text-center" >
+                        <h2 style="background: white; color: black">{{ rs.title }}</h2>
+                        <h3 style="background: white; color: black">{{ rs.description }}</h3>
+                        <a href="/product/{{ rs.id }}/{{ rs.slug }}" class="btn-primary" style="background: white; color: black">Devamını Oku</a>
+                    </div>
+                </div>
+
+
             {% endfor %}
 
         </div>

@@ -53,6 +53,7 @@ class Content(models.Model):
     city = models.TextField()
     country = models.TextField()
     konum = models.TextField()
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
