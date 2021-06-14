@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from home.models import Setting, ContactFormu, ContactFormMessage
-from product.models import Content, Category, Images
+from product.models import Content, Category, Images, Comment
 
 
 def index(request):
@@ -79,9 +79,11 @@ def content_detail(request,id,slug):
     category = Category.objects.all()
     content = Content.objects.get(pk=id)
     images = Images.objects.filter(content_id=id)
+    comments = Comment.objects.filter(content_id=id,status='True')
     context = {'content': content,
                'category': category,
                'images': images,
+               'comments': comments,
                #'setting': setting
                }
     return render(request,'content_detail.html',context)
