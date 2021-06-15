@@ -3,6 +3,7 @@ from django.db import models
 
 # Create your models here.
 from django.forms import ModelForm
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from ckeditor_uploader.fields import RichTextUploadingField
 from mptt.fields import TreeForeignKey
@@ -19,7 +20,7 @@ class Category(MPTTModel):
     description = models.CharField(blank=True, max_length=255)
     image = models.ImageField(blank=True, upload_to='images/')
     status = models.CharField(max_length=10, choices=STATUS)
-    slug = models.SlugField()
+    slug = models.SlugField(null=False, unique=True)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -40,6 +41,10 @@ class Category(MPTTModel):
             return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
     image_tag.short_description = 'Image'
 
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'slug': self.slug})
+
+
 class Content(models.Model):
     STATUS = (
         ('True', 'Evet'),
@@ -51,7 +56,7 @@ class Content(models.Model):
     description = models.CharField(blank=True, max_length=255)
     image = models.ImageField(blank=True, upload_to='images/')
     detail = RichTextUploadingField()
-    slug = models.SlugField(blank=True, max_length=150)
+    slug = models.SlugField(null=False, unique=True)
     city = models.TextField()
     country = models.TextField()
     konum = models.TextField()
@@ -67,6 +72,12 @@ class Content(models.Model):
         if self.image:
             return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
     image_tag.short_description = 'Image'
+
+    def catimg_tag(self):
+        return mark_safe((Category.status))
+
+    def get_absolute_url(self):
+        return reverse('content_detail', kwargs={'slug': self.slug})
 
 class Images(models.Model):
     content=models.ForeignKey(Content,on_delete=models.CASCADE)
