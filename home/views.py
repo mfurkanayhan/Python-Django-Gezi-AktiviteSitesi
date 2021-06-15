@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
+from home.forms import SearchForm
 from home.models import Setting, ContactFormu, ContactFormMessage
 from product.models import Content, Category, Images, Comment
 
@@ -37,8 +38,6 @@ def referanslar(request):
                'category':category
                }
     return render(request,'referanslarimiz.html', context)
-
-
 
 
 def iletisim(request):
@@ -87,3 +86,18 @@ def content_detail(request,id,slug):
                #'setting': setting
                }
     return render(request,'content_detail.html',context)
+
+def content_search(request):
+    if request.method == 'POST': # Check form post
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            category = Category.objects.all()
+            query = form.cleaned_data['query'] # Get form data
+            contents = Content.objects.filter(title__icontains=query) # Select * from content where title like %query% return HttpResponse(contents)
+            context = {'contents':contents,
+                       'category':category,
+                       }
+            return render(request,'contents_search.html', context)
+    return HttpResponseRedirect('/')
+
+
