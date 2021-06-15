@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -92,12 +94,36 @@ def content_search(request):
         form = SearchForm(request.POST)
         if form.is_valid():
             category = Category.objects.all()
+
             query = form.cleaned_data['query'] # Get form data
-            contents = Content.objects.filter(title__icontains=query) # Select * from content where title like %query% return HttpResponse(contents)
+            catid = form.cleaned_data['catid'] #Get form data
+            # return HttpResponse(catid
+            if catid == 0:
+                contents = Content.objects.filter(title__icontains=query)  # Select * from content where title like %query%
+            else:
+                contents = Content.objects.filter(title__icontains=query, category_id=catid)
+
+            # return HttpResponse(contents)
             context = {'contents':contents,
                        'category':category,
                        }
             return render(request,'contents_search.html', context)
     return HttpResponseRedirect('/')
+
+def content_search_auto(request):
+
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        content = Content.objects.filter(title__icontains=q)
+        results = []
+        for rs in content:
+            content_json = {}
+            content_json = rs.title
+            results.append(content_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
