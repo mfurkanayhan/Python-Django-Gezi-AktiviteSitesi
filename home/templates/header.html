@@ -50,6 +50,7 @@
                 </li>
                 <li><a href="/iletisim">İletişim</a></li>
                 <li><a href="/referanslar">Referanslar</a></li>
+            <!-- ======= Search ======= -->
                 <div class="row-cols-lg-2">
                     <div>
                         <form action="/search/" method="post">
@@ -72,6 +73,30 @@
 
                         </form>
                     </div>
+                </div>
+            <!-- ======= End Search ======= -->
+            <!-- ======= Login ======= -->
+                <div class="bx-pull-right">
+                    <ul class="bx-joystick-button">
+                        <li class="bxs-user-account dropdown-header default">
+                            {% if user.id is not None %}
+                            <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+                                <div>
+                                    <i class="bxs bxs-user"></i>
+                                </div>
+                                <strong class="text-uppercase">{{ user.first_name }} <i class="bi bi-caret-down"></i></strong>
+                            </div>
+                            {% else %}
+                            <a href="/login/" class="text-uppercase">Oturum Aç</a> / <a href="/join/" class="text-uppercase">Üye Ol</a>
+                            {% endif %}
+                            <ul class="bx-menu">
+                                <li><a href="#"><i class="bx bx-user-x"></i> Hesabım </a></li>
+                                <li><a href="#"><i class="bx bx-user-x"></i> İsteklerim </a></li>
+                                <li><a href="/logout/"><i class="bx bx-user-x"></i> Oturumu Kapat </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
                 </div>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
