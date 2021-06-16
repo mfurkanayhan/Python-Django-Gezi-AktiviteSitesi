@@ -50,8 +50,10 @@
                 </li>
                 <li><a href="/iletisim">İletişim</a></li>
                 <li><a href="/referanslar">Referanslar</a></li>
-            <!-- ======= Search ======= -->
-                <div class="row-cols-lg-2">
+            </ul>
+            <ul>
+                <!-- ======= Search ======= -->
+                <div class="row">
                     <div>
                         <form action="/search/" method="post">
                             {% csrf_token %}
@@ -87,7 +89,7 @@
                                 <strong class="text-uppercase">{{ user.first_name }} <i class="bi bi-caret-down"></i></strong>
                             </div>
                             {% else %}
-                            <a href="/login/" class="text-uppercase">Oturum Aç</a> / <a href="/join/" class="text-uppercase">Üye Ol</a>
+                            <a href="/login/" class="text-uppercase">Oturum Aç</a> / <a href="/signup/" class="text-uppercase">Üye Ol</a>
                             {% endif %}
                             <ul class="bx-menu">
                                 <li><a href="#"><i class="bx bx-user-x"></i> Hesabım </a></li>
@@ -96,7 +98,6 @@
                             </ul>
                         </li>
                     </ul>
-
                 </div>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>

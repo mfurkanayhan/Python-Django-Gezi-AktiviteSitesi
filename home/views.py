@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from home.forms import SearchForm
+from home.forms import SearchForm, SignUpForm
 from home.models import Setting, ContactFormu, ContactFormMessage
 from product.models import Content, Category, Images, Comment
 
@@ -15,8 +15,7 @@ def index(request):
     setting = Setting.objects.get(pk=1)
     sliderdata = Content.objects.all()[:4]
     category=Category.objects.all()
-    eventcontents = Content.objects.all().order_by('?')[:6]
-    #order_by ? kısmı idye göre random getirmek için..
+    eventcontents = Content.objects.all().order_by('?')[:6] #order_by ? kısmı idye göre random getirmek için..
 
     context={'setting':setting,
              'category': category,
@@ -35,12 +34,12 @@ def hakkimizda(request):
     return render(request,'hakkimizda.html', context)
 
 def referanslar(request):
-    category = Category.objects.all()
+
     setting = Setting.objects.get(pk=1)
-    context = {'setting':setting,
-               'category':category
-               }
+    context = {'setting':setting}
     return render(request,'referanslarimiz.html', context)
+
+
 
 
 def iletisim(request):
@@ -58,24 +57,23 @@ def iletisim(request):
             messages.success(request, "Mesajınız başarı ile gönderilmiştir. Teşekkür Ederiz ")
             return HttpResponseRedirect ('/iletisim')
 
-    category = Category.objects.all()
     setting = Setting.objects.get(pk=1)
     form = ContactFormu()
-    context = {'setting':setting,'form':form,'category':category}
+    context = {'setting':setting,'form':form}
     return render(request,'iletisim.html', context)
 
 
 def category_contents(request,id,slug):
     category = Category.objects.all()
-    setting = Setting.objects.all()
     categorydata = Category.objects.get(pk=id)
     contents = Content.objects.filter(category_id=id)
     context = {'contents': contents,
                'category': category,
-               'categorydata': categorydata,
-               'setting': setting
+               'categorydata': categorydata
                }
     return render(request,'contents.html',context)
+
+
 
 def content_detail(request,id,slug):
     category = Category.objects.all()
@@ -85,10 +83,14 @@ def content_detail(request,id,slug):
     context = {'content': content,
                'category': category,
                'images': images,
-               'comments': comments,
-               #'setting': setting
+               'comments': comments
                }
+
     return render(request,'content_detail.html',context)
+
+
+
+
 
 def content_search(request):
     if request.method == 'POST': # Check form post
@@ -96,23 +98,23 @@ def content_search(request):
         if form.is_valid():
             category = Category.objects.all()
 
-            query = form.cleaned_data['query'] # Get form data
-            catid = form.cleaned_data['catid'] #Get form data
+            query = form.cleaned_data['query']  # Get form data
+            catid = form.cleaned_data['catid']  # Get form data
             # return HttpResponse(catid
             if catid == 0:
                 contents = Content.objects.filter(title__icontains=query)  # Select * from content where title like %query%
             else:
                 contents = Content.objects.filter(title__icontains=query, category_id=catid)
 
-            # return HttpResponse(contents)
+            #return HttpResponse(contents)
             context = {'contents':contents,
                        'category':category,
                        }
             return render(request,'contents_search.html', context)
+
     return HttpResponseRedirect('/')
 
 def content_search_auto(request):
-
     if request.is_ajax():
         q = request.GET.get('term', '')
         content = Content.objects.filter(title__icontains=q)
@@ -144,10 +146,29 @@ def login_view(request):
             messages.warning(request, "Oturum Açma Hatası ! Kullanıcı adı veya şifre yanlış ")
             return HttpResponseRedirect ('/login')
 
+
     category = Category.objects.all()
     context = {'category': category,
                }
     return render(request, 'login.html', context)
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+
+    form = SignUpForm()
+    category = Category.objects.all()
+    context = {'category': category,
+               'form': form,
+               }
+    return render(request, 'signup.html', context)
 
 
 
