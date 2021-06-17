@@ -12,7 +12,8 @@
             minLength: 2,
         });
     });
-    function AutoCompleteSelectHandler(event, ui){
+
+    function AutoCompleteSelectHandler(event, ui) {
         var selectObj = ui.item;
     }
 
@@ -20,50 +21,77 @@
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
+        <li class="row">
+            <h1 class="logo"><a href="/">Me &amp; Family</a></h1>
+            <!-- Uncomment below if you prefer to use an image logo -->
+            <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
-        <h1 class="logo"><a href="/">Me &amp; Family</a></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="active" href="/">Anasayfa</a></li>
+                    <li><a href="/hakkimizda">Bizim Hikayemiz</a></li>
+                    <li><a href="/contents">Etkinlikler</a></li>
+                    <li><a href="/gallery.html">Galeri</a></li>
+                    <li class="dropdown"><a href="#"><span>Kategoriler</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            {% load mptt_tags %}
 
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a class="active" href="/">Anasayfa</a></li>
-                <li><a href="/hakkimizda">Bizim Hikayemiz</a></li>
-                <li><a href="/contents">Etkinlikler</a></li>
-                <li><a href="/gallery.html">Galeri</a></li>
-                <li class="dropdown"><a href="#"><span>Kategoriler</span> <i class="bi bi-chevron-down"></i></a>
-                    <ul>
-                        {% load mptt_tags %}
+                            {% recursetree category %}
+                                <li {% if not node.is_leaf_node %} class="dropdown" {% endif %} ><a
+                                        href="/category/{{ node.id }}/{{ node.slug }}"><span>{{ node.title }}</span>
+                                    {% if not node.is_leaf_node %} <i class="bi bi-chevron-right"> </i> {% endif %} </a>
 
-                        {% recursetree category %}
-                            <li {% if not node.is_leaf_node %} class="dropdown" {% endif %} ><a href="/category/{{ node.id }}/{{ node.slug }}"><span>{{ node.title }}</span> {% if not node.is_leaf_node %} <i class="bi bi-chevron-right"> </i> {% endif %} </a>
+                                    {% if not node.is_leaf_node %}
+                                        <ul>
+                                            <li><a href="/category/{{ node.id }}/{{ node.slug }}">{{ children }}</a>
+                                            </li>
 
-                                {% if not node.is_leaf_node %}
-                                    <ul>
-                                <li><a href="/category/{{ node.id }}/{{ node.slug }}">{{ children }}</a></li>
-
-                                    </ul>
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endrecursetree %}
+                        </ul>
+                    </li>
+                    <li><a href="/iletisim">İletişim</a></li>
+                    <li><a href="/referanslar">Referanslar</a></li>
+                    <!-- ======= Login ======= -->
+                    <li class="dropdown"><a href="#"><span>Kullanıcılara Özel</span><i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li class="bxs-user-account dropdown-header default">
+                                {% if user.id is not None %}
+                                    <div class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                         aria-expanded="true">
+                                        <div>
+                                            <i class="bxs bxs-user"></i>
+                                        </div>
+                                        <strong class="text-uppercase">{{ user.first_name }} <i
+                                                class="bi bi-caret-down"></i></strong>
+                                    </div>
+                                {% else %}
+                                    <a href="/login/" class="text-uppercase">Oturum Aç</a> /
+                                    <a href="/signup/" class="text-uppercase">Üye Ol</a>
                                 {% endif %}
+                                <ul>
+                                    <li><a href="#"><i class="bx bx-user-x"></i> Hesabım </a></li>
+                                    <li><a href="#"><i class="bx bx-user-x"></i> İsteklerim </a></li>
+                                    <li><a href="/logout/"><i class="bx bx-user-x"></i> Oturumu Kapat </a></li>
+                                </ul>
                             </li>
-                        {% endrecursetree %}
-                    </ul>
-                </li>
-                <li><a href="/iletisim">İletişim</a></li>
-                <li><a href="/referanslar">Referanslar</a></li>
-            </ul>
-            <ul>
-                <!-- ======= Search ======= -->
-                <div class="row">
-                    <div>
+                        </ul>
+                    </li>
+                     <!-- ======= Search ======= -->
+                    <li>
                         <form action="/search/" method="post">
                             {% csrf_token %}
-                            <input id="query" name="query" class="input-group-text" type="text" placeholder="Blog içi arama.." >
+                            <input id="query" name="query" class="input-group-text" type="text"
+                                   placeholder="Blog içi arama..">
 
                             {% load mptt_tags %}
                             <select name="catid" class="input search-categories">
                                 <option value="0">Tüm Kategoriler</option>
                                 {% recursetree category %}
-                                    {% if node.is_leaf_node %} <option value="{{ node.id }}">{{ node.title }}</option> {% endif %}
+                                    {% if node.is_leaf_node %}
+                                        <option value="{{ node.id }}">{{ node.title }}</option> {% endif %}
                                     {% if not node.is_leaf_node %}
                                         <optgroup label="{{ node.title }}">
                                             {{ children }}
@@ -74,34 +102,11 @@
                             <button><i class="bx bx-search"></i></button>
 
                         </form>
-                    </div>
-                </div>
-            <!-- ======= End Search ======= -->
-            <!-- ======= Login ======= -->
-                <div class="bx-pull-right">
-                    <ul class="bx-joystick-button">
-                        <li class="bxs-user-account dropdown-header default">
-                            {% if user.id is not None %}
-                            <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
-                                <div>
-                                    <i class="bxs bxs-user"></i>
-                                </div>
-                                <strong class="text-uppercase">{{ user.first_name }} <i class="bi bi-caret-down"></i></strong>
-                            </div>
-                            {% else %}
-                            <a href="/login/" class="text-uppercase">Oturum Aç</a> / <a href="/signup/" class="text-uppercase">Üye Ol</a>
-                            {% endif %}
-                            <ul class="bx-menu">
-                                <li><a href="#"><i class="bx bx-user-x"></i> Hesabım </a></li>
-                                <li><a href="#"><i class="bx bx-user-x"></i> İsteklerim </a></li>
-                                <li><a href="/logout/"><i class="bx bx-user-x"></i> Oturumu Kapat </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
-
+                    </li>
+                    <!-- ======= End Search ======= -->
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
+        </div>
     </div>
 </header><!-- End Header -->
