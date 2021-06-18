@@ -9,6 +9,7 @@ from product.models import CommentForm, Comment
 
 def index(request):
     return HttpResponse("Product Page")
+
 @login_required(login_url='/login') # Check Login
 def addcomment(request,id):
     url = request.META.get('HTTP_REFERER')  # get last url
